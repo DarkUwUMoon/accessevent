@@ -24,8 +24,7 @@ jobs:
           test -f routes/events.py || (echo "FAIL: routes/events.py not found" && exit 1)
           test -f routes/registrations.py || (echo "FAIL: routes/registrations.py not found" && exit 1)
           test -f utils/auth_helpers.py || (echo "FAIL: utils/auth_helpers.py not found" && exit 1)
-          # Добавьте сюда проверку utils/accessibility.py, если она нужна
-          test -f utils/accessibility.py || (echo "FAIL: utils/accessibility.py not found" && exit 1)
+          test -f utils/accessibility.py || (echo "FAIL: utils/accessibility.py not found" && exit 1) # Проверяем наличие файла
 
       - name: Check security helpers
         run: |
@@ -33,17 +32,16 @@ jobs:
           grep -q "generate_token" utils/auth_helpers.py || (echo "FAIL: jwt helper missing" && exit 1)
           grep -q "role_required" utils/auth_helpers.py || (echo "FAIL: role_required helper missing" && exit 1)
 
-      - name: Check accessibility
+      - name: Check accessibility string
         run: |
-          if grep -q "accessibility" utils/accessibility.py; then
-            echo "PASS: accessibility string found"
+          # !!! Убедитесь, что это слово ("доступность" или "accessibility")
+          # !!! соответствует тому, что находится в файле utils/accessibility.py
+          if grep -q "доступность" utils/accessibility.py; then
+            echo "PASS: 'доступность' string found"
           else
-            echo "FAIL: accessibility string not found in utils/accessibility.py"
-            exit 1 # Важно завершить с ошибкой, если не найдено
+            echo "FAIL: 'доступность' string not found in utils/accessibility.py"
+            exit 1 # Завершаем с ошибкой, если строка не найдена
           fi
-        # Если файл utils/accessibility.py может отсутствовать, добавьте проверку
-        # на его существование перед grep, или используйте -f опцию grep
-        # Например: grep -q "accessibility" utils/accessibility.py || echo "File or string not found" && exit 1
 
       - name: Syntax check
         run: python -m py_compile app.py config.py models.py routes/*.py utils/*.py
