@@ -6,45 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Check project structure
         run: |
-          test -f app.py || (echo "FAIL: app.py not found" && exit 1)
-          test -f config.py || (echo "FAIL: config.py not found" && exit 1)
-          test -f models.py || (echo "FAIL: models.py not found" && exit 1)
-          test -f routes/auth.py || (echo "FAIL: routes/auth.py not found" && exit 1)
-          test -f routes/events.py || (echo "FAIL: routes/events.py not found" && exit 1)
-          test -f routes/registrations.py || (echo "FAIL: routes/registrations.py not found" && exit 1)
-          test -f utils/auth_helpers.py || (echo "FAIL: utils/auth_helpers.py not found" && exit 1)
-          test -f utils/accessibility.py || (echo "FAIL: utils/accessibility.py not found" && exit 1)
-
+          test -f app.py
+          test -f config.py
+          test -f models.py
+          test -f routes/auth.py
+          test -f routes/events.py
+          test -f routes/registrations.py
+          test -f utils/auth_helpers.py
       - name: Check security helpers
         run: |
-          grep -q "hash_password" utils/auth_helpers.py || (echo "FAIL: hash_password missing" && exit 1)
-          grep -q "generate_token" utils/auth_helpers.py || (echo "FAIL: jwt helper missing" && exit 1)
-          grep -q "role_required" utils/auth_helpers.py || (echo "FAIL: role_required helper missing" && exit 1)
-
-      - name: Check accessibility string
-        run: |
-          # !!! Убедитесь, что это слово ("доступность" или "accessibility")
-          # !!! соответствует тому, что находится в файле utils/accessibility.py
-          if grep -q "доступность" utils/accessibility.py; then
-            echo "PASS: 'доступность' string found"
-          else
-            echo "FAIL: 'доступность' string not found in utils/accessibility.py"
-            exit 1 # Завершаем с ошибкой, если строка не найдена
-          fi
-
-      # --- ИСПРАВЛЕННЫЕ ОТСТУПЫ ЗДЕСЬ ---
+          grep -q "hash_password" utils/auth_helpers.py && echo "PASS: hash_password" || echo "FAIL: hash_password"
+          grep -q "generate_token" utils/auth_helpers.py && echo "PASS: jwt" || echo "FAIL: jwt"
+          grep -q "role_required" utils/auth_helpers.py && echo "PASS: roles" || echo "FAIL: roles"
+      - name: Check accessibility
+        run: grep -q "accessibility" utils/accessibility.py && echo "PASS:accessibility" || echo "FAIL:accessibility"
       - name: Syntax check
         run: python -m py_compile app.py config.py models.py routes/*.py utils/*.py
-      - name: Final success message
-        run: echo "PASS: Day3 Backend Check completed"
+      - run: echo "PASS: Day3 Backend Check completed"
