@@ -4,4 +4,3 @@ psycopg2-binary>=2.9
 pyjwt>=2.8
 python-dotenv>=1.0
 pytest>=8.0
-pip install -r requirements.txt
