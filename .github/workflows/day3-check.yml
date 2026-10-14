@@ -26,7 +26,13 @@ jobs:
           grep -q "generate_token" utils/auth_helpers.py && echo "PASS: jwt" || echo "FAIL: jwt"
           grep -q "role_required" utils/auth_helpers.py && echo "PASS: roles" || echo "FAIL: roles"
       - name: Check accessibility
-        run: grep -q "accessibility" utils/accessibility.py && echo "PASS: accessibility" || echo "FAIL: accessibility"
+        run: |
+          if grep -q "accessibility" utils/accessibility.py; then
+            echo "PASS: accessibility"
+          else
+            echo "FAIL: accessibility"
+          fi
       - name: Syntax check
         run: python -m py_compile app.py config.py models.py routes/*.py utils/*.py
+      # Эта строка теперь является корректным последним шагом
       - run: echo "PASS: Day3 Backend Check completed"
