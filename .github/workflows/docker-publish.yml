@@ -37,8 +37,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/{{ env.OWNER_LC }}/accessevent:latest
-            ghcr.io/{{ env.OWNER_LC }}/accessevent:${{ github.sha }}
+            ghcr.io/${ lower(github.repository) }:latest
+            ghcr.io/${ lower(github.repository) }:${{ github.sha }}
 
  
       - name: Summary
