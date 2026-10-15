@@ -23,6 +23,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Новый шаг: переводим имя владельца репозитория в нижний регистр
+      - name: Downcase repository owner
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
+        env:
+          OWNER: ${{ github.repository_owner }}
  
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -30,9 +37,9 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/accessevent:latest
-            ghcr.io/${{ github.repository_owner }}/accessevent:${{ github.sha }}
+            ghcr.io/{{ env.OWNER_LC }}/accessevent:latest
+            ghcr.io/{{ env.OWNER_LC }}/accessevent:${{ github.sha }}
+
  
       - name: Summary
         run: echo "Образ Docker создан и опубликован в GHCR"
-
